@@ -297,7 +297,7 @@ function Connect-MSCloudLoginPnP
                     $connectionURL = $Script:MSCloudLoginConnectionProfile.PnP.AdminUrl
                 }
 
-                if ('AzureAutomation/' -eq $env:AZUREPS_HOST_ENVIRONMENT)
+                if ($env:AZUREPS_HOST_ENVIRONMENT -like 'AzureAutomation*')
                 {
                     $url = $env:IDENTITY_ENDPOINT
                     $headers = New-Object 'System.Collections.Generic.Dictionary[[String],[String]]'
