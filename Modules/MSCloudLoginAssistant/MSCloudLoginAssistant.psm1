@@ -112,11 +112,11 @@ function Connect-M365Tenant
     elseif ( $Script:MSCloudLoginConnectionProfile.$workloadInternalName.Connected `
             -and (Compare-InputParametersForChange -CurrentParamSet $PSBoundParameters))
     {
-        Add-MSCloudLoginAssistantEvent -Message 'Resetting connection profile' -Source $source
+        Add-MSCloudLoginAssistantEvent -Message "Resetting connection for workload $workloadInternalName" -Source $source
         $Script:MSCloudLoginConnectionProfile.$workloadInternalName.Connected = $false
     }
 
-    Add-MSCloudLoginAssistantEvent -Message "Trying to connect to platform {$Workload}" -Source $source
+    Add-MSCloudLoginAssistantEvent -Message "Checking connection to platform {$Workload}" -Source $source
     switch ($Workload)
     {
         'AdminAPI'
@@ -542,6 +542,7 @@ function Compare-InputParametersForChange
     )
 
     $currentParameters = $currentParamSet
+    $source = 'Compare-InputParametersForChange'
 
     if ($null -ne $currentParameters['Credential'].UserName)
     {
@@ -676,6 +677,10 @@ function Compare-InputParametersForChange
     {
         $currentParameters.Remove('Identity') | Out-Null
     }
+    if ([System.String]::IsNullOrEmpty($currentParameters.Url))
+    {
+        $currentParameters.Remove('Url') | Out-Null
+    }
 
     if ($null -ne $globalParameters)
     {
@@ -691,6 +696,7 @@ function Compare-InputParametersForChange
     }
 
     # We found differences, so we need to connect
+    Add-MSCloudLoginAssistantEvent -Message "Found differences in parameters: $diffKeys, with values: $diffValues" -Source $source
     return $true
 }
 
