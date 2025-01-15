@@ -23,7 +23,7 @@ function Connect-MSCloudLoginExchangeOnline
     {
         try
         {
-            Get-AcceptedDomain -ErrorAction Stop
+            $null = Get-Command -Name Get-AcceptedDomain -ErrorAction Stop
 
             if (-not $loadAllCmdlets)
             {
@@ -49,15 +49,6 @@ function Connect-MSCloudLoginExchangeOnline
         {
             Add-MSCloudLoginAssistantEvent -Message 'Failed' -Source $source
         }
-    }
-
-    try
-    {
-        Add-MSCloudLoginAssistantEvent "Current domain: $($(Get-AcceptedDomain).Name)" -ErrorAction Continue -Source $source
-    }
-    catch
-    {
-        Add-MSCloudLoginAssistantEvent -Message 'Failed to load Get-AcceptedDomain' -Source $source -EntryType 'Error'
     }
 
     if ($Script:MSCloudLoginConnectionProfile.ExchangeOnline.Connected -and `
